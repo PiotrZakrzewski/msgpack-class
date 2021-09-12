@@ -7,10 +7,22 @@ class Example:
         self.param2 = param2
         self.param3 = param3
 
+    def as_dict(self) -> dict:
+        return {
+            "param1": self.param1,
+            "param2": self.param2,
+            "param3": self.param3,
+        }
+
 class ExampleChild(Example):
     def __init__(self, param1: int, param2: str, param3: dict, param4:float) -> None:
         super().__init__(param1, param2, param3)
         self.param4 = param4
+
+    def as_dict(self) -> dict:
+        dict_rep = super().as_dict()
+        dict_rep["param4"] = self.param4
+        return dict_rep
 
 def encode_example(obj):
     if isinstance(obj, ExampleChild):
