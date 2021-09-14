@@ -1,6 +1,3 @@
-import msgpack
-
-msgpack.Packer()
 class Example:
     def __init__(self, param1:int, param2:str, param3:dict) -> None:
         self.param1 = param1
