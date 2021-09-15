@@ -4,6 +4,7 @@ import pytest
 from main import ExampleChild, encode_example, decode_example
 from random import randint, choice, random
 from string import ascii_letters, digits
+import pickle
 
 
 def _rand_string(length):
@@ -29,7 +30,7 @@ _100 = gen_test_obj(100)
 _1k = gen_test_obj(1000)
 _10k = gen_test_obj(10000)
 
-@pytest.mark.parametrize("lib", ["msgpack", "json"])
+@pytest.mark.parametrize("lib", ["msgpack", "json", "pickle4", "pickle5"])
 @pytest.mark.parametrize("test_data", [single, _100, _1k, _10k], ids=["single", "100", "1k", "10k"])
 def test_dumps(benchmark, lib, test_data):
     def serdes():
@@ -37,9 +38,13 @@ def test_dumps(benchmark, lib, test_data):
             msgpack.dumps(test_data, default=encode_example)
         elif lib == "json":
             json.dumps(test_data.as_dict())
+        elif lib == "pickle4":
+            pickle.dumps(test_data, protocol=4)
+        elif lib == "pickle5":
+            pickle.dumps(test_data, protocol=5)
     benchmark(serdes)
 
-@pytest.mark.parametrize("lib", ["msgpack", "json"])
+@pytest.mark.parametrize("lib", ["msgpack", "json", "pickle4", "pickle5"])
 @pytest.mark.parametrize("test_data", [single, _100, _1k, _10k], ids=["single", "100", "1k", "10k"])
 def test_loads(benchmark, lib, test_data):
     if lib == "msgpack":
@@ -50,4 +55,12 @@ def test_loads(benchmark, lib, test_data):
         encoded = json.dumps(test_data.as_dict())
         def serdes():
             json.loads(encoded)
+    elif lib == "pickle4":
+        encoded = pickle.dumps(test_data, protocol=4)
+        def serdes():
+            pickle.loads(encoded)
+    elif lib == "pickle5":
+        encoded = pickle.dumps(test_data, protocol=5)
+        def serdes():
+            pickle.loads(encoded)
     benchmark(serdes)
