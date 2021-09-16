@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message Example {
+  int32 param1 = 1;
+  string param2 = 2;
+  repeated float param3 = 3;
+  repeated ExampleChild param4 = 4;
+}
+
+message ExampleChild {
+    int32 param1 = 1;
+    string param2 = 2;
+    repeated float param3 = 3;
+}
