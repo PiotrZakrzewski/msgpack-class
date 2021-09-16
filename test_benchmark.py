@@ -23,9 +23,13 @@ single = gen_test_obj(1)
 _100 = gen_test_obj(100)
 _1k = gen_test_obj(1000)
 _10k = gen_test_obj(10000)
+_100k = gen_test_obj(100000)
+test_sets = [single, _100, _1k, _10k, _100k]
+test_set_labels = ["single", "100", "1k", "10k", "100k"]
+libs = ["msgpack", "json", "pickle4", "pickle5", "proto"]
 
-@pytest.mark.parametrize("lib", ["msgpack", "json", "pickle4", "pickle5", "proto"])
-@pytest.mark.parametrize("test_data", [single, _100, _1k, _10k], ids=["single", "100", "1k", "10k"])
+@pytest.mark.parametrize("lib", libs)
+@pytest.mark.parametrize("test_data", test_sets, ids=test_set_labels)
 def test_dumps(benchmark, lib, test_data):
     def serdes():
         if lib == "msgpack":
@@ -40,8 +44,8 @@ def test_dumps(benchmark, lib, test_data):
             encode_example_proto(test_data)
     benchmark(serdes)
 
-@pytest.mark.parametrize("lib", ["msgpack", "json", "pickle4", "pickle5", "proto"])
-@pytest.mark.parametrize("test_data", [single, _100, _1k, _10k], ids=["single", "100", "1k", "10k"])
+@pytest.mark.parametrize("lib", libs)
+@pytest.mark.parametrize("test_data", test_sets, ids=test_set_labels)
 def test_loads(benchmark, lib, test_data):
     if lib == "msgpack":
         encoded = msgpack.dumps(test_data, default=encode_example)
