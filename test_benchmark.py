@@ -12,12 +12,15 @@ def _rand_string(length):
     return "".join([choice(chars) for _ in range(length)])
 
 def gen_test_obj(fields_no) -> ExampleChild:
-    big_dict = {}
+    big_dict = {"big_array":[]}
     for i in range(fields_no):
-        big_dict[f"{i}_str"] = _rand_string(30)
-        big_dict[f"{i}_int"] = randint(10000, 90000)
-        big_dict[f"{i}_float"] = random()
-        big_dict[f"{i}_bool"] = choice([True, False])
+        big_dict["big_array"].append(randint(10000, 90000))
+        rand_elem = {}
+        rand_elem["str"] = _rand_string(30)
+        rand_elem["int_tuple"] = (randint(10000, 90000), randint(10000, 90000))
+        rand_elem["float"] = random()
+        rand_elem["bool"] = choice([True, False])
+        big_dict[str(i)] = rand_elem
     return ExampleChild(
         randint(10000, 90000),
         _rand_string(30),
